@@ -19,6 +19,11 @@ class FirstActor extends Actor with ActorLogging {
   }
 }
 
+class Spike {
+  println("spike init")
+  def hello() = println("hello")
+}
+
 class FirstTestSpec extends TestKit(ActorSystem("FirstTest"))
   with WordSpecLike
   with BeforeAndAfterAll {
@@ -34,6 +39,17 @@ class FirstTestSpec extends TestKit(ActorSystem("FirstTest"))
       probe.send(first, "ping")
       probe.expectMsg("hello")
 
+    }
+    
+     "example " in new Spike {
+    	hello
+        hello
+    }
+
+    "example 1" in new Spike {
+    	hello
+    	override def hello = println("meh")
+        hello
     }
 
   }
