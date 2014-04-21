@@ -1,5 +1,7 @@
 package zzz.akka.avionics
 
+import Altimeter.AltitudeUpdate
+import EventSource.RegisterListener
 import akka.actor.Actor
 import akka.actor.ActorLogging
 import akka.actor.Props
@@ -14,7 +16,7 @@ class Plane extends Actor with ActorLogging {
   import Plane._
   import EventSource._
 
-  val altimeter = context.actorOf(Props[Altimeter], "Altimeter")
+  val altimeter = context.actorOf(Props(Altimeter()), "Altimeter")
   val controls = context.actorOf(Props(new ControlSurfaces(altimeter)), "ControlSurfaces")
 
   override def preStart = {
