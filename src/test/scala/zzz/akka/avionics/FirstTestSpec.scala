@@ -58,8 +58,9 @@ class FirstTestSpec extends TestKit(ActorSystem("FirstTest"))
     }
 
     "testkit latch" in {
-      val latch = TestLatch(1)
+      val latch = TestLatch(2)
       val f = future {
+    	  latch.countDown
     	  latch.countDown
       }
       Await.ready(latch, 1.seconds)
