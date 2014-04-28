@@ -10,6 +10,11 @@ import org.scalatest.WordSpecLike
 import akka.testkit.TestProbe
 import akka.actor.Props
 import akka.actor.ActorLogging
+import akka.testkit.TestLatch
+import scala.concurrent.Await
+import scala.concurrent.duration._
+import scala.concurrent.future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class FirstActor extends Actor with ActorLogging {
   def receive = {
@@ -40,16 +45,24 @@ class FirstTestSpec extends TestKit(ActorSystem("FirstTest"))
       probe.expectMsg("hello")
 
     }
-    
-     "example " in new Spike {
-    	hello
-        hello
+
+    "example " in new Spike {
+      hello
+      hello
     }
 
     "example 1" in new Spike {
-    	hello
-    	override def hello = println("meh")
-        hello
+      hello
+      override def hello = println("meh")
+      hello
+    }
+
+    "testkit latch" in {
+      val latch = TestLatch(1)
+      val f = future {
+    	  latch.countDown
+      }
+      Await.ready(latch, 1.seconds)
     }
 
   }
