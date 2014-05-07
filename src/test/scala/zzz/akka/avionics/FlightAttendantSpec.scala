@@ -12,6 +12,7 @@ import akka.testkit.TestProbe
 import akka.testkit.TestActorRef
 import akka.testkit.TestActor
 import akka.testkit.ImplicitSender
+import com.typesafe.config.ConfigFactory
 
 object TestFlightAttendant {
   def apply() = new FlightAttendant with AttendantResponsiveness {
@@ -19,7 +20,7 @@ object TestFlightAttendant {
   }
 }
 
-class FlightAttendantSpec extends TestKit(ActorSystem("EventSourceSpec"))
+class FlightAttendantSpec extends TestKit(ActorSystem("EventSourceSpec", ConfigFactory.parseString("akka.scheduler.tick-duration=10ms")))
   with ImplicitSender
   with WordSpecLike
   with Matchers {
@@ -28,8 +29,11 @@ class FlightAttendantSpec extends TestKit(ActorSystem("EventSourceSpec"))
   "FlightAttendant" should {
     "get drink when asked" in {
       val attendant = TestActorRef(Props(TestFlightAttendant()))
+      val start = System.currentTimeMillis
       attendant ! GetDrink("Soda")
       expectMsg(Drink("Soda"))
+      val end = System.currentTimeMillis - start
+      println(s"took $end ms")
     }
   }
 
